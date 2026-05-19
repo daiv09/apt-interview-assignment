@@ -40,7 +40,7 @@ export default function Chart({ chartHistory, isExpanded, onToggle }: ChartProps
                 aria-hidden={!isExpanded}
             >
                 {hasMounted && chartHistory.length > 0 ? (
-                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+                    <ResponsiveContainer width="100%" height="100%" minWidth={100} minHeight={100}>
                         <LineChart data={chartHistory} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                             <XAxis dataKey="time" stroke="#9ca3af" fontSize={10} tickLine={false} />
