@@ -164,6 +164,10 @@ export function useOrdersWebSocket() {
 
       setTimeout(() => connectWebSocket(), retryDelay);
     };
+
+    socket.onerror = (error) => {
+      console.error(`WebSocket connection failed for ${WS_URL}`, error);
+    };
   }, [playNotificationSound]);
 
   useEffect(() => {
