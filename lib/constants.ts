@@ -6,10 +6,16 @@ export const STATUS_COLORS: Record<Order["status"], string> = {
   delivered: "bg-green-200 text-green-800",
 };
 
-const DEFAULT_WS_URL =
-  process.env.NODE_ENV === "production"
-    ? "wss://apt-interview-assignment.onrender.com/ws"
-    : "ws://localhost:8080/ws";
+const LOCAL_WS_URL = "ws://localhost:8080/ws";
+const PRODUCTION_WS_URL = "wss://apt-interview-assignment.onrender.com/ws";
 
-export const WS_URL = process.env.NEXT_PUBLIC_WS_URL || DEFAULT_WS_URL;
+const isLocalBrowser =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
+const DEFAULT_WS_URL = isLocalBrowser ? LOCAL_WS_URL : PRODUCTION_WS_URL;
+
+export const WS_URL = isLocalBrowser
+  ? LOCAL_WS_URL
+  : process.env.NEXT_PUBLIC_WS_URL || DEFAULT_WS_URL;
 export const TOAST_DISCONNECT_ID = "ws-disconnect-alert-id";
