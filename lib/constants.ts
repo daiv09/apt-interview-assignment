@@ -6,5 +6,5 @@ export const STATUS_COLORS: Record<Order["status"], string> = {
   delivered: "bg-green-200 text-green-800",
 };
 
-export const WS_URL = "ws://localhost:8080";
+export const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080/ws";
 export const TOAST_DISCONNECT_ID = "ws-disconnect-alert-id";

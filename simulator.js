@@ -1,3 +1,4 @@
+import http from "node:http";
 import { WebSocketServer, WebSocket } from "ws";
 
 // Fetch configurations dynamically from hosting environment variables (Critical for Render/Railway)
@@ -21,7 +22,18 @@ const products = [
 ];
 const statuses = ["pending", "shipped", "delivered"];
 
-const wss = new WebSocketServer({ port: Number(PORT) });
+const server = http.createServer((req, res) => {
+  if (req.url === "/healthz") {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("ok");
+    return;
+  }
+
+  res.writeHead(404, { "Content-Type": "text/plain" });
+  res.end("not found");
+});
+
+const wss = new WebSocketServer({ server, path: "/ws" });
 
 console.log("────────────────────────────────────────────────────────");
 console.log(`🚀 ENTERPRISE SIMULATED TRADING ORDER ENGINE BOOTED`);
@@ -138,3 +150,5 @@ wss.on("connection", (ws, req) => {
   // Ignition point: Instantly kickstart generation metrics loops exclusively for this listener connection
   generateLiveEvent();
 });
+
+server.listen(Number(PORT));
