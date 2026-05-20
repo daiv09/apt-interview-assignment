@@ -4,6 +4,21 @@ An enterprise-grade, real-time trading order dashboard powered by a simulated tr
 
 ---
 
+## 🌐 Live Production Deployments
+
+The full-stack application has been successfully decoupled and deployed across dedicated cloud infrastructure environments:
+
+* **⚡ Frontend Dashboard (Hosted on Vercel):** [https://apt-interview-assignment.vercel.app/](https://apt-interview-assignment.vercel.app/)
+* **📡 WebSocket Simulation Engine (Hosted on Render):** `wss://apt-interview-assignment.onrender.com`
+
+> ### ⏳ Operational Note: Cold Starts
+> Because the background trading simulator is hosted on **Render’s Free Tier**, the server automatically container-sleeps during periods of inactivity. 
+> 
+> * **First Load Delay:** When opening the dashboard for the first time, please allow **50+ seconds** for the Render instance to wake up.
+> * **Live Ignition:** Once active, the status indicator will flip to green (`● Connected`), and live transaction streams will instantly populate starting cleanly from order `#1001`.
+
+---
+
 ## 📸 Media Showcase & Demos
 
 - **Main Dashboard View:** ![Dashboard Main Overview](./public/display/full-preview.png)
