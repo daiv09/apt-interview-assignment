@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { Order, AuditLog, HistoricalSnapshot, WebSocketMessage } from "@/lib/types";
@@ -32,14 +34,15 @@ export function useOrdersWebSocket() {
       socketRef.current.close();
     }
 
+    if (connectionStateRef.current === "reconnecting") {
+      console.log("ℹ️ [WS] Pipeline backend offline. Retrying background line connection...");
+    }
+
     const socket = new WebSocket(WS_URL);
     socketRef.current = socket;
 
     socket.onopen = () => {
       setIsConnected(true);
-      setLoading(false);
-      loadingRef.current = false;
-
       if (connectionStateRef.current !== "connected") {
         connectionStateRef.current = "connected";
         toast.dismiss(TOAST_DISCONNECT_ID);
@@ -51,10 +54,37 @@ export function useOrdersWebSocket() {
 
     socket.onmessage = (event) => {
       try {
-        const payload = JSON.parse(event.data) as WebSocketMessage;
-        const newOrder = payload.new;
-        const oldOrder = payload.old;
+        const payload = JSON.parse(event.data);
         const eventTime = payload.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        if (payload.type === "snapshot") {
+          const snapshotOrders = (payload.orders || []) as Order[];
+          setOrders(snapshotOrders);
+          setLoading(false);
+          loadingRef.current = false;
+
+          const snapMetrics = {
+            total: snapshotOrders.length,
+            pending: snapshotOrders.filter((o) => o.status === "pending").length,
+            shipped: snapshotOrders.filter((o) => o.status === "shipped").length,
+            delivered: snapshotOrders.filter((o) => o.status === "delivered").length,
+          };
+
+          setChartHistory([
+            {
+              time: eventTime,
+              "Total Orders": snapMetrics.total,
+              "Pending Pool": snapMetrics.pending,
+              "In Transit": snapMetrics.shipped,
+              "Delivered Ledger": snapMetrics.delivered,
+            }
+          ]);
+          return;
+        }
+
+        const typedPayload = payload as WebSocketMessage;
+        const newOrder = typedPayload.new;
+        const oldOrder = typedPayload.old;
 
         setEventCount((prev) => prev + 1);
 
@@ -62,7 +92,7 @@ export function useOrdersWebSocket() {
         let updatedOrders = [...currentOrders];
         let hasChanged = false;
 
-        switch (payload.eventType) {
+        switch (typedPayload.eventType) {
           case "INSERT":
             if (newOrder && !currentOrders.some((o) => o.id === newOrder.id)) {
               updatedOrders = [newOrder, ...currentOrders];
@@ -144,29 +174,13 @@ export function useOrdersWebSocket() {
 
     socket.onclose = () => {
       setIsConnected(false);
-      const retryDelay = loadingRef.current ? 200 : 1000;
-
-      if (connectionStateRef.current === "connected") {
-        connectionStateRef.current = "disconnected";
-        toast.error("Stream connection dropped", {
-          id: TOAST_DISCONNECT_ID,
-          description: "Offline. Attempting background connection recovery...",
-          duration: Infinity,
-        });
-      } else if (connectionStateRef.current === "disconnected") {
-        connectionStateRef.current = "reconnecting";
-        toast.error("Stream connection dropped", {
-          id: TOAST_DISCONNECT_ID,
-          description: `Re-verifying line connectivity in ${retryDelay}ms...`,
-          duration: Infinity,
-        });
-      }
-
+      const retryDelay = loadingRef.current ? 200 : 2000;
+      connectionStateRef.current = "reconnecting";
       setTimeout(() => connectWebSocket(), retryDelay);
     };
 
-    socket.onerror = (error) => {
-      console.error(`WebSocket connection failed for ${WS_URL}`, error);
+    socket.onerror = () => {
+      // Intentionally empty no-op handler to suppress the unhandled browser network logging traces in next dev
     };
   }, [playNotificationSound]);
 

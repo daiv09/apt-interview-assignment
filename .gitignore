@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# embedded database (CDC engine storage cluster directory)
+/.pg-data/
+
 # production
 /build
 
@@ -30,7 +33,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
 
 # vercel

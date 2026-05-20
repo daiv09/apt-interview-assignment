@@ -8,13 +8,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "dev:all": "concurrently \"npm run dev\" \"node simulator.js\""
+    "dev:all": "concurrently \"npm run dev\" \"node simulator.js\"",
+    "db:init": "psql $DATABASE_URL -f init.sql"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
     "dotenv": "^17.4.2",
+    "embedded-postgres": "^18.3.0-beta.17",
     "lucide-react": "^1.16.0",
     "next": "16.2.6",
+    "pg": "^8.21.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "recharts": "^3.8.1",
@@ -26,6 +29,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
     "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
