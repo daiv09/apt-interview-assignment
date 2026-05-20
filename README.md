@@ -6,17 +6,16 @@ An enterprise-grade, real-time trading order dashboard powered by a simulated tr
 
 ## 📸 Media Showcase & Demos
 
-> [!NOTE]
-> *User-provided media and video demonstration walkthroughs are hosted in this section.*
-
-### 🖼️ UI Screenshots & Photos
-*(Place your application screenshots or dashboard photos here to showcase the visual layout)*
-- **Main Dashboard View:** `![Dashboard Main Overview](./public/dashboard-preview.png)`
-- **Ledger Mutation Alert:** `![Toast Notification Alert](./public/toast-alert.png)`
+- **Main Dashboard View:** ![Dashboard Main Overview](./public/display/full-preview.png)
+- **Closed Graph Dashboard:** ![Closed Graph View](./public/display/close-graph-full-preview.png)
+- **Filtered Dashboard:** ![Filtered Data View](./public/display/filter-preview.png)
+- **Disconnected Dashboard:** ![Disconnected Dashboard View](./public/display/disconnected-between-preview.png)
 
 ### 🎥 Video Demonstration & Walkthrough
-*(Embed or link your screen recording showing the real-time websocket updates and audio feedback here)*
-- **Direct Video Link:** `[Watch the Walkthrough Video](./public/demo-walkthrough.mp4)`
+
+<video src="./public/display/demo.mp4" width="100%" controls>
+  Your browser does not support the video tag.
+</video>
 
 ---
 
